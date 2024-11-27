@@ -38,7 +38,8 @@ export const Splash = () => {
     }, [App.get('init')]);
 
     useEffect(() => {
-        preload().then(() => App.set('init', true));
+        // preload().then(() => App.set('init', true));
+        App.set('init', true);
     }, []);
 
     return (
