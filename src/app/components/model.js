@@ -3,7 +3,7 @@ export const model = [
         index: 0,
         id: 'M1S',
         title: 'AAC Light-heavyweight M1S',
-        banner: 'https://artopia-xiv.s3.us-east-2.amazonaws.com/dt-m1s.jpg',
+        banner: '/assets/images/raids/dt-m1s.jpg',
         events: [
             {
                 source: 'party',
@@ -507,18 +507,18 @@ export const model = [
         index: 1,
         id: 'M2S',
         title: 'AAC Light-heavyweight M2S',
-        banner: 'https://artopia-xiv.s3.us-east-2.amazonaws.com/dt-m2s.jpg',
+        banner: '/assets/images/raids/dt-m2s.jpg',
     },
     {
         index: 2,
         id: 'M3S',
         title: 'AAC Light-heavyweight M3S',
-        banner: 'https://artopia-xiv.s3.us-east-2.amazonaws.com/dt-m3s.jpg',
+        banner: '/assets/images/raids/dt-m3s.jpg',
     },
     {
         index: 3,
         id: 'M4S',
         title: 'AAC Light-heavyweight M4S',
-        banner: 'https://artopia-xiv.s3.us-east-2.amazonaws.com/dt-m4s.jpg',
+        banner: '/assets/images/raids/dt-m4s.jpg',
     },
 ];

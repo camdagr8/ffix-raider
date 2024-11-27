@@ -59,7 +59,7 @@
     "@atomic-reactor/reactium-role": "5.0.1",
     "@atomic-reactor/reactium-user": "6.1.0",
     "@atomic-reactor/reactium-setting": "5.0.1",
-    "@atomic-reactor/reactium-core": "6.2.3"
+    "@atomic-reactor/reactium-core": "6.2.6"
   },
   "workspaces": [
     "reactium_modules/*",
