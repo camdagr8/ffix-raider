@@ -1,0 +1,112 @@
+[data-timeline-heading] {
+    z-index: 2;
+    box-shadow: var(--flyout-shadow);
+    border-bottom: 1px solid var(--heading-border-color);
+}
+
+[data-timeline] {
+    z-index: 1;
+    position: relative;
+    padding: 24px 20px 20px 20px;
+    border-left: 4px solid var(--heading-border-color);
+
+    [data-timeline-item] {
+        margin: 0 0 20px 0;
+        position: relative;
+        box-shadow: var(--flyout-shadow);
+        border-right: 3px solid var(--color-primary);
+
+        &:last-child {
+            margin: 0 0 0 0;
+        }
+
+        * {
+            opacity: 0.5;
+        }
+
+        &::before {
+            top: 50%;
+            z-index: 0;
+            content: '';
+            left: -42px;
+            width: 42px;
+            height: 3px;
+            opacity: 0.8;
+            position: absolute;
+            transform: translateY(-50%);
+            background-color: var(--heading-border-color);
+        }
+
+        &::after {
+            top: 50%;
+            left: -42px;
+            opacity: 1;
+            content: '';
+            width: 8px;
+            height: 8px;
+            position: absolute;
+            border-radius: 100%;
+            transform: translate(-50%, -50%);
+            background-color: var(--color-primary);
+            box-shadow: 0 0 1px 3px var(--color-primary-shadow);
+        }
+
+        [data-timeline-title] {
+            padding: 19px 20px 18px 20px;
+            font-size: 20px;
+            font-weight: 600;
+            font-family: var(--title-font);
+            background-color: var(--header-bg);
+
+            &:not(:last-child) {
+                border-bottom: 1px solid var(--heading-border-color);
+            }
+
+            small {
+                font-size: 12px;
+            }
+        }
+
+        [data-timeline-notes] {
+            padding: 20px;
+            line-height: 1.25;
+            font-family: var(--body-font);
+        }
+    }
+
+    [data-timeline-active='true'] {
+        opacity: 1;
+        margin: 0 0 40px 0;
+        border-right: 3px solid var(--color-error);
+
+        &::after {
+            width: 14px;
+            height: 14px;
+            background-color: var(--color-error);
+            box-shadow: 0 0 1px 3px var(--color-error-shadow);
+        }
+
+        * {
+            opacity: 1;
+        }
+    }
+
+    [data-timeline-next='true'] {
+        border-right: 3px solid var(--color-warning);
+
+        &::after {
+            width: 12px;
+            height: 12px;
+            background-color: var(--color-warning);
+            box-shadow: 0 0 1px 3px var(--color-warning-shadow);
+        }
+
+        * {
+            opacity: 1;
+        }
+    }
+
+    [data-timeline-prev='true'] {
+        display: none;
+    }
+}

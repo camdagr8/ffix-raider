@@ -1,0 +1,134 @@
+[data-form-group] {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    position: relative;
+
+    input,
+    textarea {
+        margin: 0;
+        width: 100%;
+        min-width: 1px;
+        outline: none;
+        padding: 10px 16px;
+        border-radius: 4px;
+        color: var(--main-text-color);
+        border: 1px solid transparent;
+        background-color: var(--border-color);
+        transition: trans(all);
+
+        @include input-factory();
+    }
+
+    &[data-form-error] {
+        &:not([data-form-error='']) {
+            input,
+            textarea {
+                box-shadow: 0 0 1px 3px rgba($color-danger, 0.4);
+
+                &:focus {
+                    box-shadow: 0 0 1px 3px rgba($color-danger, 0.4);
+                }
+            }
+
+            &::after {
+                content: attr(data-form-error);
+                font-size: 12px;
+                margin: 8px 0 0 0;
+                width: 100%;
+                opacity: 0.8;
+            }
+        }
+    }
+}
+
+[data-form-card] {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+    padding: 40px;
+    border-radius: 8px;
+    width: 100%;
+    box-shadow: var(--card-shadow);
+    background-color: var(--main-bg-color);
+}
+
+@mixin input-switch() {
+    [data-switch='left'],
+    [data-switch='right'] {
+        display: flex;
+        flex-wrap: nowrap;
+        position: relative;
+        padding-top: 3px;
+        user-select: none;
+        cursor: pointer;
+        border-radius: 2px;
+        min-height: 24px;
+        outline: none;
+
+        input {
+            height: 0%;
+            opacity: 0;
+            top: -100000px;
+            left: -100000px;
+            position: fixed;
+        }
+
+        &::before {
+            box-shadow: 0 0 1px 3px rgba($color-primary, 0);
+        }
+
+        &:focus {
+            &::before {
+                box-shadow: 0 0 1px 3px rgba($color-primary, 0.4);
+            }
+        }
+    }
+
+    $props: (right, left) !default;
+
+    @each $prop in $props {
+        [data-switch='#{$prop}'] {
+            padding-#{$prop}: 64px;
+
+            &::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                #{$prop}: 0;
+                height: 24px;
+                width: 42px;
+                border-radius: 2px;
+                opacity: 0.75;
+                transition: trans(opacity);
+                background-color: $color-primary;
+            }
+
+            &::after {
+                content: '';
+
+                top: 2px;
+                width: 20px;
+                height: 20px;
+                #{$prop}: 20px;
+                position: absolute;
+                border-radius: 1px;
+                transition: trans($prop);
+                background-color: var(--main-bg-color);
+            }
+
+            &[data-switch-checked='true']::before {
+                opacity: 1;
+                transition: trans(opacity);
+            }
+
+            &[data-switch-checked='true']::after {
+                #{$prop}: 2px;
+                transition: trans($prop);
+            }
+        }
+    }
+}
+
+@include input-switch();

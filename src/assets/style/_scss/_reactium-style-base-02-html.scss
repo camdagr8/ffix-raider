@@ -1,0 +1,30 @@
+html {
+    padding: 0;
+    position: relative;
+    background-color: var(--main-bg-color);
+
+    * {
+        font-weight: 400;
+        font-family: var(--body-font);
+        font-size: var(--body-font-size);
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        position: relative;
+        color: var(--main-text-color);
+        transition: trans(background-color);
+        background-color: var(--main-bg-color);
+    }
+
+    @include heading-factory();
+
+    [data-line] {
+        height: 0;
+        width: 100%;
+        content: '';
+        display: block;
+        border-top: 1px solid var(--border-color);
+    }
+}

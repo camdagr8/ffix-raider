@@ -1,0 +1,931 @@
+@use 'sass:map';
+@use 'sass:math';
+@use 'sass:list';
+@use 'sass:string';
+
+@function zindex($k, $inc: 0) {
+    $k: 1000000 !default;
+
+    $values: (
+        overlay: 100000,
+        header: 200000,
+        modal: 300000,
+        blocker: 400000,
+    );
+
+    $value: map.get($values, $k);
+
+    @if ($value) {
+        $value: $value + $inc;
+    }
+    @return $value;
+}
+
+@function color-name($str) {
+    @return string.slice($str, 7);
+}
+
+@function trans($prop, $s: 0.25s) {
+    @return #{$prop} $s ease-in-out;
+}
+
+@function strip-units($number) {
+    @return math.div($number, $number * 0 + 1);
+}
+
+@function px2rem($px) {
+    $rnum: strip-units($root-font);
+    $fnum: strip-units($px);
+    $rem: math.div($fnum, $rnum);
+    @return #{$rem}rem;
+}
+
+@function px2vw($px) {
+    $rnum: 1920;
+    $fnum: strip-units($px);
+    $vw: math.div($fnum, $rnum) * 100;
+    @return #{$vw}vw;
+}
+
+@function px2vh($px) {
+    $rnum: 1080;
+    $fnum: strip-units($px);
+    $vw: math.div($fnum, $rnum) * 100;
+    @return #{$vw}vh;
+}
+
+@function suffix($str, $s: null) {
+    @if ($s) {
+        @return #{$str}-#{$s};
+    } @else {
+        @return $str;
+    }
+}
+
+@function prefix($str, $s: null) {
+    @if ($s) {
+        @return #{$s}-#{$str};
+    } @else {
+        @return $str;
+    }
+}
+
+@mixin overflow($bp: null) {
+    [#{suffix(data-overflow, $bp)}],
+    [#{suffix(data-overflow, $bp)}='true'],
+    [#{suffix(data-overflow, $bp)}='auto'] {
+        overflow: auto;
+    }
+
+    [#{suffix(data-overflow, $bp)}='x'] {
+        overflow-x: auto;
+    }
+
+    [#{suffix(data-overflow, $bp)}='y'] {
+        overflow-y: auto;
+    }
+
+    [#{suffix(data-overflow, $bp)}='false'],
+    [#{suffix(data-overflow, $bp)}='hidden'] {
+        overflow: hidden;
+    }
+}
+
+@mixin breakpoint($thisPrefix) {
+    $break: map.get($breakpoints, $thisPrefix);
+
+    @if ($break !=null) {
+        @media #{$break} {
+            @content;
+        }
+    }
+}
+
+@mixin position-factory($bp: null) {
+    $positions: (absolute, fixed, relative, static, sticky) !default;
+
+    @each $pos in $positions {
+        [#{suffix(data-position, $bp)}='#{$pos}'] {
+            position: #{$pos};
+        }
+    }
+}
+
+@mixin cursor() {
+    $cursors: (default, pointer, text) !default;
+
+    @each $cursor in $cursors {
+        [data-cursor='#{$cursor}'] {
+            cursor: #{$cursor};
+            @if ($cursor == pointer) {
+                user-select: none;
+            }
+        }
+    }
+}
+
+@mixin size-factory($bp: null) {
+    @each $prop-name, $props in $sizesExp {
+        @for $size from -50 through 200 {
+            [data-#{suffix($prop-name, $bp)}='#{$size}'] {
+                @each $prop in $props {
+                    #{$prop}: px2rem($size) !important;
+                }
+            }
+        }
+    }
+}
+
+@mixin size-factory-auto($bp: null) {
+    [#{suffix(data-margin-auto, $bp)}] {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    [#{suffix(data-margin-auto, $bp)}='left'] {
+        margin-left: auto;
+    }
+
+    [#{suffix(data-margin-auto, $bp)}='right'] {
+        margin-right: auto;
+    }
+}
+
+@mixin size-factory-border($bp: null) {
+    @each $prop-name, $props in $bordersExp {
+        @for $size from 0 through 10 {
+            [data-#{suffix($prop-name, $bp)}='#{$size}'] {
+                @each $prop in $props {
+                    #{$prop}: px2rem($size) solid !important;
+                }
+            }
+        }
+    }
+}
+
+@mixin size-factory-wh($bp: null) {
+    @for $size from 0 through 480 {
+        @if ($size == 0) {
+            [#{suffix(data-width, $bp)}='auto'] {
+                width: auto;
+            }
+            [#{suffix(data-height, $bp)}='auto'] {
+                height: auto;
+            }
+        }
+
+        @if ($size < 101) {
+            [#{suffix(data-width, $bp)}='#{$size}%'] {
+                width: #{$size}+ string.unquote('%');
+            }
+            [#{suffix(data-height, $bp)}='#{$size}%'] {
+                height: #{$size}+ string.unquote('%');
+            }
+
+            [#{suffix(data-width, $bp)}='#{$size}vw'] {
+                width: #{$size}+ string.unquote('vw');
+            }
+            [#{suffix(data-width, $bp)}='#{$size}vh'] {
+                width: #{$size}+ string.unquote('vh');
+            }
+
+            [#{suffix(data-height, $bp)}='#{$size}vh'] {
+                height: #{$size}+ string.unquote('vh');
+            }
+
+            [#{suffix(data-height, $bp)}='#{$size}vw'] {
+                height: #{$size}+ string.unquote('vw');
+            }
+        }
+
+        [#{suffix(data-width, $bp)}='#{$size}'] {
+            width: px2rem($size);
+        }
+
+        [#{suffix(data-height, $bp)}='#{$size}'] {
+            height: px2rem($size);
+        }
+    }
+}
+
+@mixin size-generate() {
+    @include size-factory();
+    @include size-factory-wh();
+    @include size-factory-auto();
+    @include size-factory-border();
+
+    @each $prefix in $breakpoint-all-prefixes {
+        @include breakpoint($prefix) {
+            @include size-factory($prefix);
+            @include size-factory-wh($prefix);
+            @include size-factory-auto($prefix);
+            @include size-factory-border($prefix);
+        }
+    }
+}
+
+@mixin row-generate($bp: null) {
+    [#{suffix(data-row, $bp)}] {
+        width: 100%;
+        display: flex;
+        margin: 0 auto;
+        flex: 0 1 auto;
+        flex-wrap: wrap;
+        flex-direction: row;
+    }
+
+    [#{suffix(data-row, $bp)}='reverse'] {
+        width: 100%;
+        display: flex;
+        margin: 0 auto;
+        flex: 0 1 auto;
+        flex-wrap: wrap;
+        flex-direction: row-reverse;
+    }
+}
+
+@mixin col-props($i) {
+    flex-basis: math.div(100%, $grid-columns) * $i;
+    max-width: math.div(100%, $grid-columns) * $i;
+}
+
+@mixin col-generate($bp: null) {
+    @for $i from 1 through $grid-columns {
+        [#{suffix(data-col, $bp)}='#{$i}'],
+        [#{suffix(data-column, $bp)}='#{$i}'] {
+            flex-basis: math.div(100%, $grid-columns) * $i;
+            max-width: math.div(100%, $grid-columns) * $i;
+        }
+
+        [#{suffix(data-col-offset, $bp)}='#{$i}'],
+        [#{suffix(data-column-offset, $bp)}='#{$i}'] {
+            margin-left: math.div(100%, $grid-columns) * $i;
+        }
+    }
+}
+
+@mixin flex-factory-wrap($bp: null) {
+    $values: (
+        'wrap': wrap,
+        'none': nowrap,
+        'reverse': wrap-reverse,
+    );
+
+    @each $key, $value in $values {
+        @if ($key == wrap) {
+            [#{suffix(data-flex-wrap, $bp)}],
+            [#{suffix(data-flex-wrap, $bp)}='#{$key}'] {
+                flex-wrap: #{$value};
+            }
+        } @else {
+            [#{suffix(data-flex-wrap, $bp)}='#{$key}'] {
+                flex-wrap: #{$value};
+            }
+        }
+    }
+}
+
+@mixin flex-factory-align($bp: null) {
+    [#{suffix(data-flex-align, $bp)}='left'] {
+        justify-content: flex-start;
+    }
+
+    [#{suffix(data-flex-align, $bp)}='right'] {
+        justify-content: flex-end;
+    }
+
+    [#{suffix(data-flex-align, $bp)}='center'] {
+        justify-content: center;
+    }
+
+    [#{suffix(data-flex-align, $bp)}='stretch'] {
+        justify-content: stretch;
+    }
+
+    [#{suffix(data-flex-align, $bp)}='between'] {
+        justify-content: space-between;
+    }
+
+    [#{suffix(data-flex-align, $bp)}='around'] {
+        justify-content: space-around;
+    }
+
+    [#{suffix(data-flex-align, $bp)}='evenly'] {
+        justify-content: space-evenly;
+    }
+}
+
+@mixin flex-factory-valign($bp: null) {
+    [#{suffix(data-flex-valign, $bp)}='top'] {
+        align-items: flex-start;
+    }
+
+    [#{suffix(data-flex-valign, $bp)}='bottom'] {
+        align-items: flex-end;
+    }
+
+    [#{suffix(data-flex-valign, $bp)}='middle'] {
+        align-items: center;
+    }
+
+    [#{suffix(data-flex-valign, $bp)}='stretch'] {
+        align-items: stretch;
+    }
+
+    [#{suffix(data-flex-align, $bp)}='between'] {
+        align-items: space-between;
+    }
+
+    [#{suffix(data-flex-align, $bp)}='around'] {
+        align-items: space-around;
+    }
+
+    [#{suffix(data-flex-align, $bp)}='evenly'] {
+        align-items: space-evenly;
+    }
+}
+
+@mixin flex-factory-grow($bp: null) {
+    [#{suffix(data-flex-grow, $bp)}] {
+        flex-grow: 1;
+    }
+
+    @for $i from 0 through $grid-columns {
+        [#{suffix(data-flex-grow, $bp)}='#{$i}'] {
+            flex-grow: #{$i};
+        }
+    }
+}
+
+@mixin flex-factory-shrink($bp: null) {
+    [#{suffix(data-flex-shrink, $bp)}] {
+        flex-shrink: 1;
+    }
+
+    @for $i from 0 through $grid-columns {
+        [#{suffix(data-flex-shrink, $bp)}='#{$i}'] {
+            flex-shrink: #{$i};
+        }
+    }
+}
+
+@mixin flex-factory-order($bp: null) {
+    @for $i from 1 through $grid-columns {
+        [#{suffix(data-flex-order, $bp)}='#{$i}'] {
+            order: #{$i};
+        }
+    }
+
+    [#{suffix(data-flex-order, $bp)}='first'] {
+        order: -1;
+    }
+
+    [#{suffix(data-flex-order, $bp)}='last'] {
+        order: 13;
+    }
+}
+
+@mixin flex-factory($bp: null) {
+    [#{suffix(data-flex, $bp)}],
+    [#{suffix(data-flex, $bp)}='row'] {
+        display: flex;
+        flex-wrap: nowrap;
+        flex-direction: row;
+    }
+
+    [#{suffix(data-flex, $bp)}='reverse'],
+    [#{suffix(data-flex, $bp)}='row-reverse'] {
+        display: flex;
+        flex-wrap: nowrap;
+        flex-direction: row-reverse;
+    }
+
+    [#{suffix(data-flex, $bp)}='col'],
+    [#{suffix(data-flex, $bp)}='column'] {
+        display: flex;
+        flex-wrap: nowrap;
+        flex-direction: column;
+    }
+
+    [#{suffix(data-flex, $bp)}='col-reverse'],
+    [#{suffix(data-flex, $bp)}='column-reverse'] {
+        display: flex;
+        flex-wrap: nowrap;
+        flex-direction: column-reverse;
+    }
+
+    @include flex-factory-align($bp);
+    @include flex-factory-valign($bp);
+    @include flex-factory-grow($bp);
+    @include flex-factory-shrink($bp);
+    @include flex-factory-order($bp);
+    @include flex-factory-wrap($bp);
+}
+
+@mixin grid-generate() {
+    @include row-generate();
+    @include col-generate();
+    @include flex-factory();
+    @include position-factory();
+
+    @each $bp in $breakpoint-all-prefixes {
+        @include breakpoint($bp) {
+            @include row-generate($bp);
+            @include col-generate($bp);
+            @include flex-factory($bp);
+            @include position-factory($bp);
+        }
+    }
+}
+
+@mixin visibility-block($bp: null) {
+    $values: block, flex, none, inline-block;
+
+    @each $value in $values {
+        @if ($value == block) {
+            [#{suffix(data-display, $bp)}],
+            [#{suffix(data-display, $bp)}='#{$value}'] {
+                display: #{$value};
+            }
+        } @else {
+            [#{suffix(data-display, $bp)}='#{$value}'] {
+                display: #{$value};
+            }
+        }
+    }
+}
+
+@mixin visibility() {
+    @include visibility-block();
+    @include overflow();
+
+    @each $bp in $breakpoint-all-prefixes {
+        @include breakpoint($bp) {
+            @include visibility-block($bp);
+            @include overflow($bp);
+        }
+    }
+}
+
+@mixin text-align($bp: null) {
+    $sides: left, right, center, justify, initial, inherit;
+
+    @each $side in $sides {
+        [#{suffix(data-text-align, $bp)}='#{$side}'] {
+            text-align: #{$side};
+        }
+    }
+}
+
+@mixin text-shadow($bp: null) {
+    [#{suffix(data-text-shadow, $bp)}] {
+        text-shadow: var(--text-shadow);
+    }
+}
+
+@mixin text-decoration($bp: null) {
+    $vals: (
+        underline: underline,
+        strike: line-through,
+        overline: overline,
+    );
+
+    @each $k, $v in $vals {
+        [data-text-#{suffix($k, $bp)}] {
+            text-decoration: #{$v};
+        }
+    }
+}
+
+@mixin text-transform($bp: null) {
+    $vals: (capitalize, uppercase, lowercase, initial, inherit);
+
+    @each $k in $vals {
+        [data-text-#{suffix($k, $bp)}] {
+            text-transform: #{$k};
+        }
+    }
+}
+
+@mixin text-generate() {
+    @include cursor();
+    @include text-align();
+    @include text-shadow();
+    @include text-transform();
+    @include text-decoration();
+
+    @each $bp in $breakpoint-all-prefixes {
+        @include breakpoint($bp) {
+            @include text-align($bp);
+            @include text-shadow($bp);
+            @include text-transform($bp);
+            @include text-decoration($bp);
+        }
+    }
+}
+
+@mixin font-style($bp: null) {
+    $fontStyles: (normal, italic, oblique, initial, inherit);
+
+    @each $s in $fontStyles {
+        [#{suffix(data-font-style, $bp)}='#{$s}'] {
+            font-style: #{$s};
+        }
+    }
+}
+
+@mixin font-weight($bp: null) {
+    $weights: (
+        'thin': 100,
+        'extra-light': 200,
+        'light': 300,
+        'normal': 400,
+        'medium': 500,
+        'semi-bold': 600,
+        'bold': 700,
+        'extra-bold': 800,
+        'black': 900,
+    );
+
+    @each $k, $v in $weights {
+        [#{suffix(data-font-weight, $bp)}='#{$k}'],
+        [#{suffix(data-font-weight, $bp)}='#{$v}'] {
+            font-weight: #{$v};
+        }
+    }
+}
+
+@mixin font-size($bp: null) {
+    @for $i from 10 through 100 {
+        [#{suffix(data-font-size, $bp)}='#{$i}'] {
+            font-size: px2rem($i);
+        }
+
+        @if ($i == 10) {
+            [#{suffix(data-font-size, $bp)}='xs'] {
+                font-size: px2rem($i);
+            }
+        }
+
+        @if ($i == 12) {
+            [#{suffix(data-font-size, $bp)}='sm'] {
+                font-size: px2rem($i);
+            }
+        }
+
+        @if ($i == 18) {
+            [#{suffix(data-font-size, $bp)}='md'] {
+                font-size: px2rem($i);
+            }
+        }
+
+        @if ($i == 32) {
+            [#{suffix(data-font-size, $bp)}='lg'] {
+                font-size: px2rem($i);
+            }
+        }
+
+        @if ($i == 64) {
+            [#{suffix(data-font-size, $bp)}='xl'] {
+                font-size: px2rem($i);
+            }
+        }
+    }
+}
+
+@mixin font-generate() {
+    @include font-size();
+    @include font-style();
+    @include font-weight();
+
+    @each $bp in $breakpoint-all-prefixes {
+        @include breakpoint($bp) {
+            @include font-size($bp);
+            @include font-style($bp);
+            @include font-weight($bp);
+        }
+    }
+}
+
+@mixin container-resp($w, $bp) {
+    [#{suffix(data-container, $bp)}] {
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+
+        @include breakpoint($bp) {
+            max-width: calc(#{px2rem($w)} - 40px);
+        }
+    }
+}
+
+@mixin container($w, $br) {
+    [data-container='#{$br}'] {
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        max-width: calc(#{px2rem($w)} - 40px);
+    }
+}
+
+@mixin containers() {
+    [data-container] {
+        width: 100%;
+        max-width: 1600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    @each $bp, $w in $breakpoints-max {
+        @include container($w, $bp);
+        @include container-resp($w, $bp);
+    }
+}
+
+@mixin color-block($br: null) {
+    $props: top, right, bottom, left;
+
+    @each $name, $value in $color {
+        $name: color-name($name);
+        [#{suffix(data-color, $br)}='#{$name}'] {
+            color: #{$value};
+        }
+
+        [#{suffix(data-bg-color, $br)}='#{$name}'] {
+            background-color: #{$value};
+        }
+
+        i[#{suffix(data-color, $br)}='#{$name}'],
+        sub[#{suffix(data-color, $br)}='#{$name}'],
+        sup[#{suffix(data-color, $br)}='#{$name}'] {
+            padding: 0 4px;
+            font-size: 10px;
+            min-width: 16px;
+            min-height: 16px;
+            font-style: normal;
+            text-align: center;
+            color: $color-white;
+            border-radius: 20px;
+            align-items: center;
+            display: inline-flex;
+            justify-content: center;
+            background-color: #{$value};
+            box-shadow: var(--cart-shadow);
+            font-family: Helvetica, Arial, sans-serif;
+        }
+
+        svg[#{suffix(data-stroke, $br)}='#{$name}'] {
+            * {
+                stroke: #{$value};
+            }
+        }
+
+        svg[#{suffix(data-fill, $br)}='#{$name}'] {
+            * {
+                fill: #{$value};
+            }
+        }
+
+        [#{suffix(data-bc, $br)}='#{$name}'],
+        [#{suffix(data-border-color, $br)}='#{$name}'] {
+            border-color: #{$value};
+        }
+
+        @each $side in $props {
+            [data-bc-#{suffix($side, $br)}='#{$name}'],
+            [data-border-color-#{suffix($side, $br)}='#{$name}'] {
+                #{suffix(border-color, $side)}: #{$value};
+            }
+        }
+    }
+}
+
+@mixin color-factory() {
+    @include color-block();
+    @each $bp in $breakpoint-all-prefixes {
+        @include breakpoint($bp) {
+            @include color-block($bp);
+        }
+    }
+}
+
+@mixin header-block($br: null) {
+    $values: 48px 48px 24px 24px 18px 18px;
+    $weights: 600, 100, 600, 100, 600, 100;
+
+    @for $i from 1 through list.length($values) {
+        @if ($br) {
+            [#{suffix(data-heading, $br)}='#{$i}'] {
+                font-size: list.nth($values, $i);
+                font-weight: list.nth($weights, $i);
+            }
+        } @else {
+            h#{$i},
+            [data-heading='#{$i}'] {
+                font-size: list.nth($values, $i);
+                font-weight: list.nth($weights, $i);
+            }
+        }
+    }
+}
+
+@mixin heading-factory() {
+    @include header-block();
+
+    @each $bp in $breakpoint-all-prefixes {
+        @include breakpoint($bp) {
+            @include header-block($bp);
+        }
+    }
+}
+
+@mixin flat-button-attr($bp: null) {
+    $btn-sizes: (
+        xs: 4 12,
+        sm: 16 14,
+        md: 24 16,
+        lg: 32 24,
+        xl: 48 36,
+    ) !default;
+
+    @each $k, $i in $btn-sizes {
+        $x: list.nth($i, 1);
+        $f: list.nth($i, 2);
+
+        $y: math.floor($x * 0.4);
+        $r: $f * 4;
+
+        [#{suffix(data-btn-size, $bp)}='#{$k}'] {
+            padding: #{$y}px #{$x}px;
+            font-size: #{$f}px;
+        }
+
+        [#{suffix(data-btn-pill, $bp)}] {
+            border-radius: #{$r}px;
+        }
+    }
+
+    [#{suffix(data-btn-block, $bp)}] {
+        width: 100%;
+    }
+
+    [#{suffix(data-btn-block, $bp)}='false'] {
+        width: auto;
+    }
+
+    [#{suffix(data-btn-icon-shadow, $bp)}] {
+        svg {
+            filter: var(--svg-shadow);
+        }
+    }
+}
+
+@mixin flat-button($c: null, $t: null, $o: null) {
+    $shadowOn: none !default;
+    $shadowOff: none !default;
+    $bg: rgba(0, 0, 0, 0) !default;
+    $txt: var(--main-text-color) !default;
+    $brd: 2px solid transparent !default;
+
+    @if ($t !=null) {
+        $txt: $t;
+    }
+
+    @if ($c != null) {
+        $brd: 2px solid $c;
+        $shadowOn: 0 0 1px 3px rgba($c, 0.4);
+        $shadowOff: 0 0 1px 0px rgba($c, 0);
+
+        @if ($o != null) {
+            $txt: $c;
+        } @else {
+            $bg: $c;
+        }
+    }
+
+    padding: 0;
+    border: none;
+    border-radius: 3px;
+    background-color: $bg;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    color: $txt !important;
+    transition: trans(all);
+    opacity: 0.8;
+    flex-shrink: 0;
+    font-size: 16px;
+    font-weight: 500;
+    border: $brd;
+    text-decoration: none;
+    text-shadow: none;
+    line-height: 1;
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+    &:hover {
+        opacity: 1;
+        box-shadow: $shadowOn;
+    }
+
+    &:focus {
+        box-shadow: $shadowOn;
+    }
+
+    &:active {
+        box-shadow: $shadowOff;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        box-shadow: $shadowOff;
+    }
+
+    * {
+        pointer-events: none;
+    }
+
+    svg {
+        &,
+        * {
+            fill: $txt;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+    }
+}
+
+@mixin button-factory() {
+    [data-btn] {
+        @include flat-button($color-primary, $color-white);
+    }
+
+    [data-btn-outline] {
+        @include flat-button($color-primary, $color-white, 1);
+    }
+
+    [data-btn='clear'] {
+        @include flat-button();
+    }
+
+    [data-mode='dark'] {
+        [data-btn='default'] {
+            @include flat-button($color-gray-dark, $color-grey-light);
+        }
+
+        [data-btn-outline='default'] {
+            @include flat-button($color-grey, $color-gray-dark, 1);
+        }
+    }
+
+    [data-mode='light'] {
+        [data-btn='default'] {
+            @include flat-button($color-grey-light, $color-gray-dark);
+        }
+
+        [data-btn-outline='default'] {
+            @include flat-button($color-grey, $color-grey-light, 1);
+        }
+    }
+
+    @each $name, $value in $color {
+        $name: color-name($name);
+        [data-btn='#{$name}'] {
+            @include flat-button($value, $color-white);
+        }
+
+        [data-btn-outline='#{$name}'] {
+            @include flat-button($value, $color-white, 1);
+        }
+    }
+
+    @include flat-button-attr();
+    @each $bp in $breakpoint-all-prefixes {
+        @include breakpoint($bp) {
+            @include flat-button-attr($bp);
+        }
+    }
+}
+
+@mixin input-factory() {
+    box-shadow: 0 0 1px 0px rgba($color-primary, 0);
+
+    &:focus {
+        box-shadow: 0 0 1px 3px rgba($color-primary, 0.4);
+    }
+
+    @each $name, $value in $color {
+        $name: color-name($name);
+
+        $shadowOn: 0 0 1px 3px rgba($value, 0.4);
+        $shadowOff: 0 0 1px 0px rgba($value, 0);
+
+        [data-input-color='#{$name}'] {
+            box-shadow: $shadowOff;
+
+            &:focus {
+                box-shadow: $shadowOn;
+            }
+        }
+    }
+}

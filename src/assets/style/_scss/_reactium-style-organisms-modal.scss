@@ -1,0 +1,47 @@
+.ar-modal {
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    position: fixed;
+    z-index: zindex(modal);
+
+    &.visible {
+        opacity: 1;
+        display: block;
+    }
+
+    &-bg {
+        top: 0;
+        left: 0;
+        z-index: 1;
+        width: 100vw;
+        height: 100vh;
+        position: absolute;
+        border: none;
+        background-color: rgba($color-black, 0.8);
+    }
+
+    &-wrapper {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        overflow-y: auto;
+        padding: 24px 0;
+    }
+
+    &-content {
+        z-index: 10;
+        padding: 0;
+        display: inline;
+
+        @include breakpoint(sm) {
+            top: 40px;
+        }
+    }
+}

@@ -1,0 +1,31 @@
+.reactium-loading {
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    z-index: zindex(blocker);
+    color: var(--main-text-color);
+    background-color: var(--main-bg-color);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg * {
+        fill: var(--color-primary);
+    }
+
+    &,
+    * {
+        box-sizing: border-box;
+    }
+
+    &::after {
+        display: none;
+    }
+
+    &::before {
+        display: none;
+    }
+}

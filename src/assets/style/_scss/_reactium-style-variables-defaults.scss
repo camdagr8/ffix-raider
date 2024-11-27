@@ -1,0 +1,168 @@
+$dt-font-weight: 400 !default;
+$headings-margin-bottom: 0 !default;
+$label-margin-bottom: 0 !default;
+$line-height-base: 1 !default;
+$paragraph-margin-bottom: 0px !default;
+$table-caption-color: inherit !default;
+$table-cell-padding: 10px !default;
+
+$reactium-blue: #1d9dd8 !default;
+$reactium-white: #ffffff !default;
+
+$color-primary: $color-purple !default;
+$color-danger: $color-red !default;
+
+// Grid
+$grid-columns: 12 !default; // Set number of columns in the grid
+
+// smallest to largest
+$breakpoints-max: (
+    'xs': 640,
+    'sm': 990,
+    'md': 1284,
+    'lg': 1440,
+    'xl': 1920,
+    'xxl': 3200,
+) !default;
+
+$xs-max: '#{map-get($breakpoints-max, 'xs')}px' !default; // Set xs breakpoint's max width
+$sm-max: '#{map-get($breakpoints-max, 'sm')}px' !default; // Set sm breakpoint's max width
+$md-max: '#{map-get($breakpoints-max, 'md')}px' !default; // Set md breakpoint's max width
+$lg-max: '#{map-get($breakpoints-max, 'xl')}px' !default; // Set lg breakpoint's max width
+$xl-max: '#{map-get($breakpoints-max, 'xl')}px' !default; // Set xl breakpoint's max width
+
+$gutter: 0 !default;
+
+$sm-start: '#{map-get($breakpoints-max, 'xs') + 1}px' !default; // Set sm breakpoint's min width
+$md-start: '#{map-get($breakpoints-max, 'sm') + 1}px' !default; // Set md breakpoint's min width
+$lg-start: '#{map-get($breakpoints-max, 'md') + 1}px' !default; // Set lg breakpoint's min width
+$xl-start: '#{map-get($breakpoints-max, 'lg') + 1}px' !default; // Set xl breakpoint's min width
+$xxl-start: '#{map-get($breakpoints-max, 'xl') + 1}px' !default; // Set xxl breakpoint's min width
+
+$content-well-max-width: 'none' !default; // Set the max-width of the content well
+
+// Breakpoints
+// Create breakpoint range statements to be used in media queries
+$breakpoint-xs-up: 'only screen' !default;
+$breakpoint-sm-up: 'only screen and (min-width: #{$sm-start})' !default; // sm-start -> up range
+$breakpoint-md-up: 'only screen and (min-width: #{$md-start})' !default; // md-start -> up range
+$breakpoint-lg-up: 'only screen and (min-width: #{$lg-start})' !default; // lg-start -> up range
+$breakpoint-xl-up: 'only screen and (min-width: #{$xl-start})' !default; // xl-start -> up range
+$breakpoint-xxl-up: 'only screen and (min-width: #{$xxl-start})' !default; // xxl-start -> up range
+
+$breakpoint-xs-only: 'only screen and (max-width: #{$xs-max})' !default; // 0 -> xs-max range
+$breakpoint-sm-only: 'only screen and (min-width: #{$sm-start}) and (max-width: #{$sm-max})' !default; // sm-start -> sm-max range
+$breakpoint-md-only: 'only screen and (min-width: #{$md-start}) and (max-width: #{$md-max})' !default; // md-start -> md-max range
+$breakpoint-lg-only: 'only screen and (min-width: #{$lg-start}) and (max-width: #{$lg-max})' !default; // lg-start -> lg-max range
+$breakpoint-xl-only: 'only screen and (min-width: #{$xl-start}) and (max-width: #{$xl-max})' !default; // lg-start -> xl-max range
+
+$breakpoint-sm-down: 'only screen and (max-width: #{$sm-max})' !default; // sm -> down
+$breakpoint-md-down: 'only screen and (max-width: #{$md-max})' !default; // md -> down
+$breakpoint-lg-down: 'only screen and (max-width: #{$lg-max})' !default; // lg -> down
+$breakpoint-xl-down: 'only screen and (max-width: #{$xl-max})' !default; // xl -> down
+
+$breakpoints-all: (
+    $breakpoint-xs-only,
+    $breakpoint-sm-up,
+    $breakpoint-sm-only,
+    $breakpoint-md-up,
+    $breakpoint-md-only,
+    $breakpoint-lg-up,
+    $breakpoint-lg-only,
+    $breakpoint-xl-up,
+    $breakpoint-xl-only,
+    $breakpoint-xxl-up
+) !default;
+
+$breakpoint-ups: (
+    $breakpoint-sm-up,
+    $breakpoint-md-up,
+    $breakpoint-lg-up,
+    $breakpoint-xl-up,
+    $breakpoint-xxl-up
+) !default;
+
+$breakpoint-all-prefixes: (
+    'xs',
+    'xs-only',
+    'sm',
+    'sm-only',
+    'md',
+    'md-only',
+    'lg',
+    'lg-only',
+    'xl',
+    'xl-only',
+    'xxl'
+) !default;
+
+$breakpoint-up-prefixes: ('xs', 'sm', 'md', 'lg', 'xl', 'xxl') !default;
+
+$breakpoints: (
+    'xs': $breakpoint-xs-up,
+    'xs-only': $breakpoint-xs-only,
+    'sm': $breakpoint-sm-up,
+    'sm-only': $breakpoint-sm-only,
+    'sm-down': $breakpoint-sm-down,
+    'md': $breakpoint-md-up,
+    'md-only': $breakpoint-md-only,
+    'md-down': $breakpoint-md-down,
+    'lg': $breakpoint-lg-up,
+    'lg-only': $breakpoint-lg-only,
+    'lg-down': $breakpoint-lg-down,
+    'xl': $breakpoint-xl-up,
+    'xl-down': $breakpoint-xl-down,
+    'xxl': $breakpoint-xxl-up,
+) !default;
+
+$sizes: () !default;
+
+$sizesExp: (
+    'margin': margin,
+    'margin-top': margin-top,
+    'margin-right': margin-right,
+    'margin-bottom': margin-bottom,
+    'margin-left': margin-left,
+    'margin-x': margin-left margin-right,
+    'margin-y': margin-top margin-bottom,
+    'padding': padding,
+    'padding-top': padding-top,
+    'padding-right': padding-right,
+    'padding-bottom': padding-bottom,
+    'padding-left': padding-left,
+    'padding-x': padding-left padding-right,
+    'padding-y': padding-top padding-bottom,
+    'm': margin,
+    'mt': margin-top,
+    'mr': margin-right,
+    'mb': margin-bottom,
+    'ml': margin-left,
+    'mx': margin-left margin-right,
+    'my': margin-top margin-bottom,
+    'p': padding,
+    'pt': padding-top,
+    'pr': padding-right,
+    'pb': padding-bottom,
+    'pl': padding-left,
+    'px': padding-left padding-right,
+    'py': padding-top padding-bottom,
+) !default;
+
+$bordersExp: (
+    'border': border,
+    'border-top': border-top,
+    'border-bottom': border-bottom,
+    'border-left': border-left,
+    'border-right': border-right,
+    'border-x': border-left border-right,
+    'border-y': border-top border-bottom,
+    'b': border,
+    'bt': border-top,
+    'bb': border-bottom,
+    'bl': border-left,
+    'br': border-right,
+    'bx': border-left border-right,
+    'by': border-top border-bottom,
+) !default;
+
+$root-font: 16px !default;

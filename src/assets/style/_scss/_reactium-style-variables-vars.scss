@@ -1,0 +1,66 @@
+$root-font: 16px !default;
+$color-gray-shadow: rgba($color-gray, 0.4) !default;
+$color-primary-shadow: rgba($color-primary, 0.4) !default;
+$color-secondary-shadow: rgba($color-blue, 0.4) !default;
+$color-tertiary-shadow: rgba($color-blue, 0.4) !default;
+$color-success-shadow: rgba($color-green, 0.4) !default;
+$color-warning-shadow: rgba($color-orange, 0.4) !default;
+$color-error-shadow: rgba($color-danger, 0.4) !default;
+
+html {
+    --body-font-size: $root-font;
+    --body-font: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --title-font: Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --footer-bg: rgba(255, 255, 255, 0.025);
+    --color-neutral: #{$color-gray};
+    --color-primary: #{$color-primary};
+    --color-secondary: #{$color-blue};
+    --color-tertiary: #{$color-blue};
+    --color-success: #{$color-green};
+    --color-warning: #{$color-orange};
+    --color-error: #{$color-danger};
+    --color-neutral-shadow: #{$color-gray-shadow};
+    --color-primary-shadow: #{$color-primary-shadow};
+    --color-secondary-shadow: #{$color-secondary-shadow};
+    --color-tertiary-shadow: #{$color-tertiary-shadow};
+    --color-success-shadow: #{$color-success-shadow};
+    --color-warning-shadow: #{$color-warning-shadow};
+    --color-error-shadow: #{$color-error-shadow};
+    --text-shadow: 1px 1px 1px rgba(10, 10, 10, 0.5);
+    --svg-shadow: drop-shadow(1px 1px 1px rgba(10, 10, 10, 0.8));
+
+    &,
+    &[data-mode='dark'] {
+        --main-bg-color: #{$color-gray-dark};
+        --main-text-color: #{$color-grey-light};
+        --border-color: rgba(255, 255, 255, 0.1);
+        --header-text-color: #{$color-grey-light};
+        --header-bg: rgba(33, 36, 40, 0);
+        --header-bg-scrolled: rgba(33, 36, 40, 0.5);
+        --header-nav-bg: #{$color-black};
+        --header-shadow: 0 4px 20px 0 rgba(10, 10, 10, 0);
+        --header-shadow-scrolled: 0 4px 20px 0 rgba(10, 10, 10, 0.8);
+        --heading-border-color: rgba(10, 10, 10, 0.5);
+        --footer-text-color: #{$color-grey};
+        --footer-heading-color: #{$color-white};
+        --text-shadow-auto: 1px 1px 1px rgba(10, 10, 10, 0.5);
+        --flyout-shadow: 0 0 4px 0 rgba(10, 10, 10, 1);
+    }
+
+    &[data-mode='light'] {
+        --main-bg-color: #{$color-white};
+        --main-text-color: #{$color-gray-dark};
+        --border-color: rgba(10, 10, 10, 0.05);
+        --header-text-color: rgba(10, 10, 10, 0.75);
+        --header-bg: rgba(255, 255, 255, 0);
+        --header-bg-scrolled: rgba(255, 255, 255, 0.5);
+        --header-nav-bg: #{$color-white};
+        --header-shadow: 0 4px 20px 0 rgba(10, 10, 10, 0);
+        --header-shadow-scrolled: 0 4px 20px 0 rgba(10, 10, 10, 0.05);
+        --heading-border-color: rgba(10, 10, 10, 0.03);
+        --footer-text-color: #{$color-gray-dark};
+        --footer-heading-color: #{$color-black};
+        --text-shadow-auto: none;
+        --flyout-shadow: 0 0 4px 0 rgba(10, 10, 10, 0.09);
+    }
+}
