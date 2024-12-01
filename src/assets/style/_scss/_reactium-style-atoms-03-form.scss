@@ -20,6 +20,26 @@
         @include input-factory();
     }
 
+    [data-form-placeholder],
+    [data-form-placeholder='left'] {
+        left:0;
+        top: 50%;
+        padding: 0 12px;
+        user-select: none;
+        position: absolute;
+        white-space: nowrap;
+        pointer-events: none;
+        transform: translateY(-50%);
+
+        &[data-word-wrap],
+        &[data-word-wrap='true'] {
+            white-space: normal;
+        }
+        &[data-word-wrap='false'] {
+            white-space: nowrap;
+        }
+    }
+
     &[data-form-error] {
         &:not([data-form-error='']) {
             input,

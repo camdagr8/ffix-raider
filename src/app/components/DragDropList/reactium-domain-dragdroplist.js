@@ -1,9 +1,9 @@
 /**
  * -----------------------------------------------------------------------------
- * DDD Domain Splash - Change name to place domain artifacts in this directory
+ * DDD Domain DragDropList - Change name to place domain artifacts in this directory
  * in a different domain.
  * -----------------------------------------------------------------------------
  */
 module.exports = {
-    name: 'Splash',
+    name: 'DragDropList',
 };

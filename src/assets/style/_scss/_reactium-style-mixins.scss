@@ -4,7 +4,7 @@
 @use 'sass:string';
 
 @function zindex($k, $inc: 0) {
-    $k: 1000000 !default;
+    $k: overlay !default;
 
     $values: (
         overlay: 100000,
@@ -137,16 +137,19 @@
 }
 
 @mixin size-factory-auto($bp: null) {
-    [#{suffix(data-margin-auto, $bp)}] {
+    [#{suffix(data-margin-auto, $bp)}],
+    [#{suffix(data-m, $bp)}='auto'] {
         margin-left: auto;
         margin-right: auto;
     }
 
-    [#{suffix(data-margin-auto, $bp)}='left'] {
+    [#{suffix(data-margin-auto, $bp)}='left'],
+    [#{suffix(data-ml, $bp)}='auto'] {
         margin-left: auto;
     }
 
-    [#{suffix(data-margin-auto, $bp)}='right'] {
+    [#{suffix(data-margin-auto, $bp)}='right'],
+    [#{suffix(data-ml, $bp)}='right'] {
         margin-right: auto;
     }
 }
@@ -261,6 +264,12 @@
         [#{suffix(data-column-offset, $bp)}='#{$i}'] {
             margin-left: math.div(100%, $grid-columns) * $i;
         }
+    }
+}
+
+@mixin hide-show-factory($bp: null) {
+    [#{suffix(data-hide, $bp)}] {
+        display: none;
     }
 }
 
@@ -456,11 +465,13 @@
 }
 
 @mixin visibility() {
+    @include hide-show-factory();
     @include visibility-block();
     @include overflow();
 
     @each $bp in $breakpoint-all-prefixes {
         @include breakpoint($bp) {
+            @include hide-show-factory($bp);
             @include visibility-block($bp);
             @include overflow($bp);
         }

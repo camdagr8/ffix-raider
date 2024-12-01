@@ -1,12 +1,12 @@
 import _ from 'underscore';
 import op from 'object-path';
 import { model } from './model';
+import { v4 as UUID } from 'uuid';
 import { DiscordSDK } from '@discord/embedded-app-sdk';
 import colors from '../../assets/style/_scss/colors-default.json';
-import {
+import Reactium, {
     Enums,
     Hook,
-    Prefs,
     Routing,
     State,
 } from '@atomic-reactor/reactium-core/sdk';
@@ -17,6 +17,45 @@ import {
  * -----------------------------------------------------------------------------
  */
 const initialSearchString = window.location.search;
+State.Loading = window.LoadingRef.current;
+
+const getCurrentUser = async () => {
+    let user = Reactium.User.current(true);
+
+    if (user) {
+        try {
+            user = await user.fetch();
+        } catch (err) {
+            user = null;
+            Reactium.User.logOut();
+        }
+    }
+
+    if (!user) {
+        const uuid = UUID();
+        const upass = UUID();
+        const uname = `raider-${uuid}@email.com`;
+
+        const meta = {
+            uuid,
+            raids: model,
+        };
+
+        user = new Reactium.Object('_User');
+        user.set('meta', meta);
+        user.set('email', uname);
+        user.set('username', uname);
+        user.set('password', upass);
+
+        await user.save();
+
+        await Reactium.User.logIn(uname, upass);
+
+        user = Reactium.User.current(true);
+    }
+
+    return user;
+};
 
 const _routingStateHandler = async () => {
     if (!Routing.currentRoute) {
@@ -51,10 +90,9 @@ const observer = () => {
 };
 
 (async () => {
-    if (!Prefs.get('site')) Prefs.set('site', {});
-
-    State.set('init', false);
     State.set('raids', model);
+    State.set('color', {});
+    State.set('preloaded', {});
 
     try {
         State.Discord = new DiscordSDK('1310197556269289514');
@@ -71,7 +109,7 @@ const observer = () => {
         m = String(m).toLowerCase();
         m = !modes.includes(m) ? 'light' : m;
 
-        State.set('site.mode', m);
+        State.set('color.mode', m);
 
         document.documentElement.setAttribute('data-mode', m);
         return State;
@@ -95,12 +133,24 @@ const observer = () => {
     Hook.register(
         'init',
         async () => {
-            State.set('init', false);
+            let user = await getCurrentUser();
 
-            State.Loading = window.LoadingRef.current;
+            State.set('raids', op.get(user.get('meta'), 'raids', model));
+
+            // const m = State.get('raids').map(raid => {
+            //     raid.id = UUID();
+            //     raid.events = raid.events.map(item => {
+            //         item.id = UUID();
+            //         return item;
+            //     });
+
+            //     return raid;
+            // });
+
+            // console.log(JSON.stringify(m));
 
             State.extend('modeToggle', () => {
-                const m = State.get('site.mode') === 'dark' ? 'light' : 'dark';
+                const m = State.get('color.mode') === 'dark' ? 'light' : 'dark';
                 State.setMode(m);
                 return State;
             });

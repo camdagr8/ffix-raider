@@ -1,4 +1,4 @@
-.splash {
+[data-library] {
     position: relative;
 
     a {
@@ -21,6 +21,16 @@
             font-family: var(--title-font);
             text-shadow: var(--text-shadow-auto);
             background-color: var(--header-bg-scrolled);
+
+            [data-btn] {
+                opacity: 0;
+            }
+        }
+
+        &:hover {
+            [data-title] [data-btn] {
+                opacity: 1;
+            }
         }
     }
 }

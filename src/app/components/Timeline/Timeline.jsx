@@ -8,7 +8,7 @@ import _ from 'underscore';
 import moment from 'moment';
 import { Icon } from '../common-ui/Icon';
 import { useSyncStateEffect } from '../hooks';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import {
     useStatus,
@@ -85,20 +85,11 @@ export const Timeline = () => {
 
     const state = useSyncState({
         id,
-        active: 6,
+        active: 0,
         raid: null,
         timestamp: null,
         ...props,
     });
-
-    const init = () => {
-        const id = state.get('id');
-        const raid = _.findWhere(App.get('raids'), { id });
-        if (raid) {
-            App.set('init', true);
-            state.set('raid', raid);
-        }
-    };
 
     const active = useMemo(() => state.get('active') || 0, [
         state.get('active'),
@@ -153,8 +144,23 @@ export const Timeline = () => {
         state.set('active', 0);
     };
 
+    const mount = () => {
+        const id = state.get('id');
+        const raid = _.findWhere(App.get('raids'), { id });
+        if (raid) {
+            state.set('raid', raid);
+            document.title = raid.title;
+        }
+
+        if (App.get('autoplay') === true && raid && raid.events.length > 0) {
+            setStatus('Play', true);
+        }
+
+        App.Loading.hide();
+    };
     const unmount = () => {
         return () => {
+            App.set('autoplay', null);
             clear();
         };
     };
@@ -164,7 +170,13 @@ export const Timeline = () => {
         return output || [];
     }, [state.get('raid')]);
 
-    useEffect(unmount, []);
+    const onBackClick = () => {
+        const url = App.get('autoplay')
+            ? `/edit/timeline/${state.get('id')}`
+            : '/';
+
+        App.navTo(url);
+    };
 
     useEffect(() => {
         switch (status) {
@@ -178,11 +190,9 @@ export const Timeline = () => {
         }
     }, [status]);
 
-    useEffect(init, [state.get('id')]);
+    useEffect(mount, [state.get('id')]);
 
-    useSyncStateEffect(() => {
-        if (App.get('init') === true) App.Loading.hide();
-    }, [App.get('init')]);
+    useEffect(unmount, []);
 
     const render = () => {
         const title = state.get('raid.title');
@@ -197,7 +207,7 @@ export const Timeline = () => {
                         data-flex-valign='middle'>
                         <BackButton
                             data-flex-shrink={0}
-                            onClick={() => App.navTo('/')}
+                            onClick={onBackClick}
                         />
                         <div
                             data-flex-grow

@@ -2,7 +2,12 @@ import cn from 'classnames';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { TweenMax, Power2 } from 'gsap/umd/TweenMax';
-import React, { forwardRef, useEffect, useImperativeHandle } from 'react';
+import React, {
+    forwardRef,
+    createContext,
+    useEffect,
+    useImperativeHandle,
+} from 'react';
 
 import Reactium, {
     cxFactory,
@@ -11,6 +16,8 @@ import Reactium, {
     useSyncState,
     Enums,
 } from '@atomic-reactor/reactium-core/sdk';
+
+const ModalContext = createContext({});
 
 let Modal = ({ ...initialProps }, ref) => {
     const refs = useRefs();
@@ -191,28 +198,30 @@ let Modal = ({ ...initialProps }, ref) => {
         const { children, className, visible } = state.get();
 
         return ReactDOM.createPortal(
-            <div
-                id={props.id}
-                ref={setRef('container')}
-                className={cn(cx(), className, { visible })}>
-                {isDismissable() ? (
-                    <button
-                        type='button'
-                        onClick={dismiss}
-                        className={cx('bg')}
-                        ref={setRef('dismiss')}
-                    />
-                ) : (
-                    <div className={cx('bg')} />
-                )}
-                <div className={cx('wrapper')}>
-                    <div
-                        children={children}
-                        ref={setRef('content')}
-                        className={cx('content')}
-                    />
+            <ModalContext.Provider value={state}>
+                <div
+                    id={props.id}
+                    ref={setRef('container')}
+                    className={cn(cx(), className, { visible })}>
+                    {isDismissable() ? (
+                        <button
+                            type='button'
+                            onClick={dismiss}
+                            className={cx('bg')}
+                            ref={setRef('dismiss')}
+                        />
+                    ) : (
+                        <div className={cx('bg')} />
+                    )}
+                    <div className={cx('wrapper')}>
+                        <div
+                            children={children}
+                            ref={setRef('content')}
+                            className={cx('content')}
+                        />
+                    </div>
                 </div>
-            </div>,
+            </ModalContext.Provider>,
             document.body,
         );
     };
@@ -302,4 +311,4 @@ Modal.defaults = {
     visible: false,
 };
 
-export { Modal, Modal as default };
+export { Modal, Modal as default, ModalContext };

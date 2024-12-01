@@ -1,0 +1,138 @@
+$etbh: 60px !default;
+
+[data-timeline-toolbar] {
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: $etbh;
+    padding: 20px 12px 20px 0;
+    display: flex;
+    position: fixed;
+    align-items: center;
+    z-index: zindex(overlay);
+    box-shadow: var(--flyout-shadow);
+    background-color: var(--main-bg-color);
+
+    [data-btn],
+    [data-btn-outline] {
+        height: 38px;
+        min-width: 38px;
+    }
+}
+
+[data-timeline-hero] {
+    width: 100%;
+    height: 50vw;
+    position: relative;
+    padding: $etbh 0 0 0;
+
+    @include breakpoint(md) {
+        height: 33vw;
+        max-height: 480px;
+    }
+
+    [data-image] {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center center;
+    }
+}
+
+[data-timeline-editor] {
+    width: 100%;
+
+    [data-droppable] {
+        padding: 32px;
+    }
+
+    [data-draggable] {
+        position: relative;
+
+        &::after {
+            top: 36px;
+            left: 8px;
+            width: 4px;
+            height: 11px;
+            content: '';
+            opacity: 0.5;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            border-left: 1px solid var(--main-text-color);
+            border-right: 1px solid var(--main-text-color);
+        }
+
+        [data-form-placeholder] {
+            position: absolute;
+            left: 0;
+            top: 20.1953px;
+            opacity: 0.6;
+        }
+
+        [data-insert-row] {
+            display: none;
+
+            [data-btn] {
+                height: 26px;
+            }
+
+            [data-btn='red'] {
+                position: absolute;
+                right: 24px;
+                top: 36.5px;
+            }
+        }
+
+        &:hover {
+            [data-insert-row] {
+                width: 100%;
+                position: absolute;
+                display: flex;
+                justify-content: center;
+                transform: translateY(-50%);
+                z-index: zindex(overlay);
+            }
+        }
+    }
+
+    [data-dragging='true'] {
+        [data-notes] {
+            display: none;
+        }
+
+        [data-insert-row] {
+            display: none;
+        }
+    }
+}
+
+[data-dialog] {
+    background-color: var(--main-bg-color);
+    box-shadow: var(--flyout-shadow);
+    border-radius: 4px;
+
+    [data-dialog-header] {
+        display: flex;
+        align-items: center;
+        padding: 12px 0 12px 12px;
+        border-bottom: 1px solid var(--heading-border-color);
+    }
+
+    [data-dialog-body] {
+        padding: 40px;
+    }
+
+    [data-dialog-actions] {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 40px;
+    }
+
+    [data-dialog-footer] {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 12px;
+        border-top: 1px solid var(--heading-border-color);
+    }
+}
